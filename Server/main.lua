@@ -10,10 +10,10 @@ AddEventHandler('YeganehhaPayPhone:registerPhone', function(phoneNumber, phoneCo
         isBussy = false,
         isCaller = false,
         isCallRecipient = false,
-        rangeOfRing = Config.RangeOfRing
-        callID = nil
-        callerSourceID = nil
-        callRecipientSourceID = nil
+        rangeOfRing = Config.RangeOfRing,
+        callID = nil,
+        callerSourceID = nil,
+        callRecipientSourceID = nil,
         callingPhonNumber = nil
     }
 	TriggerClientEvent('YeganehhaPayPhone:registerPhone', -1, phoneNumber, Config.FixePhone[phoneNumber])
@@ -61,7 +61,7 @@ AddEventHandler('YeganehhaPayPhone:answer', function(source, phoneNumber)
             sourceNumber = numebr
         end
     end
-    if Config.FixePhone[phoneNumber] ~= nil and sourceNumber ~= nil and a Config.FixePhone[sourceNumber] ~= nil then
+    if Config.FixePhone[phoneNumber] ~= nil and sourceNumber ~= nil and  Config.FixePhone[sourceNumber] ~= nil then
         callID = callID + 1
         Config.FixePhone[sourceNumber].callID = callID
         Config.FixePhone[phoneNumber].callID = callID
@@ -88,7 +88,7 @@ AddEventHandler('YeganehhaPayPhone:reject', function (source)
 end)
 
 function rejectCall(sourceNumber , phoneNumber)
-    if phoneNumber ~= nil and Config.FixePhone[phoneNumber] ~= nil and sourceNumber ~= nil and a Config.FixePhone[sourceNumber] ~= nil then
+    if phoneNumber ~= nil and Config.FixePhone[phoneNumber] ~= nil and sourceNumber ~= nil and Config.FixePhone[sourceNumber] ~= nil then
         TriggerClientEvent('YeganehhaPayPhone:reject', Config.FixePhone[sourceNumber].callerSourceID)
         TriggerClientEvent('YeganehhaPayPhone:reject', Config.FixePhone[sourceNumber].callerSourceID)
         Config.FixePhone[sourceNumber].isBussy = false 

@@ -8,22 +8,26 @@ local phoneModels = {
     'prop_phonebox_03',
     'prop_phonebox_04'
 }
+local isOnCall = false
+local registeredPhones = {}
+local soundId = nil
+local isRingPhoneRun = false
+local ringSoudId = {}
 
 RegisterNetEvent('YeganehhaPayPhone:registerPhone')
 AddEventHandler('YeganehhaPayPhone:registerPhone', function(phoneNumber, data)
   Config.FixePhone[phoneNumber] = data
-  if ( Config.FixePhone[numebr].isCallRecipient == false and ringSoudId[numebr] ~= nil) then
-    StopSound(ringSoudId[numebr])
-    ReleaseSoundId(ringSoudId[numebr])
+  if ( Config.FixePhone[phoneNumber].isCallRecipient == false and ringSoudId[phoneNumber] ~= nil) then
+    StopSound(ringSoudId[phoneNumber])
+    ReleaseSoundId(ringSoudId[phoneNumber])
     ReleaseNamedScriptAudioBank("ASSASSINATION_MULTI")
-    ringSoudId[numebr] = nil
+    ringSoudId[phoneNumber] = nil
   end
-  if ( Config.FixePhone[numebr].isCallRecipient == true) then
+  if ( Config.FixePhone[phoneNumber].isCallRecipient == true) then
     ringPhons()
   end
 end)
 
-local isOnCall = false
 RegisterNetEvent('YeganehhaPayPhone:answer')
 AddEventHandler('YeganehhaPayPhone:answer', function(callID, sourceNumber , RecipientNumber)
     isOnCall = true
@@ -70,8 +74,6 @@ AddEventHandler('YeganehhaPayPhone:reject', function()
     isOnCall = false
 end)
 
-
-local registeredPhones = {}
 
 AddEventHandler('onClientResourceStart', function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then
@@ -159,11 +161,13 @@ end)
 
 AddEventHandler('YeganehhaPayPhone:openKeyPad', function(data)
     local entity = GetEntityCoords(data.entity)
+    print(entity)
+    print(getPhoneEntityNumber(data.entity))
     SetNuiFocus(true, true)
     SendNUIMessage({
         action = "ui",
         toggle = true,
-        phoneNumber = getPhoneEntityNumber(entity),
+        phoneNumber = getPhoneEntityNumber(data.entity),
         brand = Config.PayPhoneBrand,
     })
     SetCursorLocation(0.9, 0.75)
@@ -172,18 +176,19 @@ end)
 
 function getPhoneEntityNumber(entity)
     local phoneCoords = GetEntityCoords(entity)
-    local number = ('0%.2s-%.2s%.2s'):format(math.abs(phoneCoords.x*100), math.abs(phoneCoords.y * 100), math.abs(phoneCoords.z *100))
-    if Config.FixePhone[number] ~= nil then
-        number = Config.FixePhone[number]
+    local number = ('0%.3s%.3s%.3s'):format(math.abs(phoneCoords.x*100), math.abs(phoneCoords.y * 100), math.abs(phoneCoords.z *100))
+    if Config.ReplaceNumber[number] ~= nil then
+        number = Config.ReplaceNumber[number]
     end
     if not Config.FixePhone[number] then
-        local phoneName =  GetStreetNameFromHashKey(GetStreetNameAtCoord(phoneCoords))
+        --local phoneName =  GetStreetNameFromHashKey(GetStreetNameAtCoord(phoneCoords))
+        local phoneName =  'Test'
         TriggerServerEvent('YeganehhaPayPhone:registerPhone', number, phoneCoords , phoneName )
     end
+    print(json.encode(number) , number)
     return number
 end
 
-local soundId = nil
 RegisterNUICallback('dial', function(data)
     if soundId == nil then
         soundId = GetSoundId()
@@ -211,12 +216,10 @@ end)
 
 
 
-local isRingPhoneRun = false
 function ringPhons()
 	Citizen.CreateThread(function()
         if ( isRingPhoneRun == false) then
             local playerPed = PlayerPedId()
-            local ringSoudId = {}
             local haveActiveRing = true
             while haveActiveRing do
                 isRingPhoneRun = true
@@ -232,7 +235,6 @@ function ringPhons()
                             SetVariableOnSound(ringSoudId[numebr], "Volume", 5)
                             SetVariableOnSound(ringSoudId[numebr], "DistanceAttentuation", 10)
                             PlaySoundFromCoord(ringSoudId[numebr], 'Phone_Ring_Loop', Config.FixePhone[numebr].coords, 'DLC_Security_Payphone_Hits_General_Sounds', false , Config.FixePhone[numebr].rangeOfRing , false)
-                            PLAY_SOUND_FROM_COORD
                         end
                         if ( distance >  Config.FixePhone[numebr].rangeOfRing + 0.01 and ringSoudId[numebr] ~= nil) then
                             StopSound(ringSoudId[numebr])
@@ -253,8 +255,11 @@ end
 
 AddEventHandler('YeganehhaPayPhone:pickupIncomingCall', function(data)
     local entity = data.entity
+    print(entity)
     local number = getPhoneEntityNumber(entity)
+    print(number)
     if ( ringSoudId[numebr] ~= nil) then
+        print(ringSoudId[numebr])
         StopSound(ringSoudId[numebr])
         ReleaseSoundId(ringSoudId[numebr])
         ReleaseNamedScriptAudioBank("ASSASSINATION_MULTI")

@@ -8,6 +8,7 @@ Config.RangeOfRing  = 8
 Config.UsePmaVoice   = true -- PMA voice Resource (Recomended!) https://forum.cfx.re/t/release-voip-pma-voice-mumble-voip-alternative/1896255
 Config.UseMumbleVoIP = false -- Use Frazzle's Mumble-VoIP Resource for some of the people who wanted it https://github.com/FrazzIe/mumble-voip
 
+Config.ReplaceNumber = {}
 
 Config.FixePhone = {
     ['911'] = { 

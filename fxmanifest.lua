@@ -1,4 +1,5 @@
-resource_manifest_version '44febabe-d386-4d18-afbe-5e627f4af937'
+fx_version 'cerulean'
+game 'gta5'
 
 description 'stand a lone gang system'
 version '0.0.0.1'
@@ -23,4 +24,10 @@ files {
     'NUI/script.js',
     'NUI/style.css',
     'NUI/tones.js'
+}
+
+lua54 'yes'
+
+dependency {
+    'qb-target',
 }
