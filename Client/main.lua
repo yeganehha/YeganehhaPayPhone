@@ -1,13 +1,3 @@
-local phoneModels = {
-    'p_phonebox_01b_s',
-    'p_phonebox_02_s',
-    'prop_phonebox_01a',
-    'prop_phonebox_01b',
-    'prop_phonebox_01c',
-    'prop_phonebox_02',
-    'prop_phonebox_03',
-    'prop_phonebox_04'
-}
 local isOnCall = false
 local registeredPhones = {}
 local soundId = nil
@@ -50,7 +40,7 @@ AddEventHandler('YeganehhaPayPhone:answer', function(callID, sourceNumber , Reci
         NetworkSetVoiceChannel(callID)
         NetworkSetTalkerProximity(0.0)
     end
-    print(phoneCoords , 'ssssssss')
+    PhonePlayCall(true)
     Citizen.CreateThread(function()
         local playerPed = GetPlayerPed(-1)
         while isOnCall do
@@ -84,6 +74,7 @@ AddEventHandler('YeganehhaPayPhone:reject', function()
         phoneNumber = '',
         brand = Config.PayPhoneBrand,
     })
+    PhonePlayOut()
     if ( isOnCall == true ) then
         if Config.UseMumbleVoIP then
             exports["mumble-voip"]:SetCallChannel(0)
@@ -123,7 +114,7 @@ AddEventHandler('onClientResourceStart', function(resourceName)
         while true do
           local playerPed = GetPlayerPed(-1)
           local coords = GetEntityCoords(playerPed)
-          for _, model in pairs(phoneModels) do
+          for _, model in pairs(Config.PhoneModels) do
             local closestPhone = GetClosestObjectOfType(coords, 25.0, model)
             if closestPhone ~= 0 and not registeredPhones[closestPhone] then
               local numebr = getPhoneEntityNumber(closestPhone)
@@ -134,7 +125,7 @@ AddEventHandler('onClientResourceStart', function(resourceName)
         end
     end)
 
-    exports['qb-target']:AddTargetModel(phoneModels, {
+    exports['qb-target']:AddTargetModel(Config.PhoneModels, {
         options = {
             {
                 type = "client",
@@ -214,6 +205,7 @@ AddEventHandler('YeganehhaPayPhone:openKeyPad', function(data)
         brand = Config.PayPhoneBrand,
     })
     SetCursorLocation(0.9, 0.75)
+    PhonePlayCall(true)
 end)
 
 
@@ -263,6 +255,7 @@ RegisterNUICallback('exit', function(data,cb)
         phoneNumber = '',
         brand = Config.PayPhoneBrand,
     })
+    PhonePlayOut()
     TriggerServerEvent('YeganehhaPayPhone:reject')
     cb()
 end)
