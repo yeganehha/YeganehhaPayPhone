@@ -7,6 +7,7 @@ author 'Erfan Ebrahimi'
 url 'http://erfanebrahimi.ir'
 
 
+ui_page 'NUI/index.html'
 
 server_scripts {
 	'config.lua',

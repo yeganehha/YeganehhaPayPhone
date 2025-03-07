@@ -103,13 +103,6 @@ $(window).on("mouseup touchend", function () {
 });
 
 $("html").on("keypress", function (e) {
-  console.log(
-    "Handler for `keypress` called.",
-    e.which,
-    String.fromCharCode(e.which),
-    e.key
-  );
-
   e.preventDefault();
 
   if (outOfOrder) {
@@ -148,7 +141,7 @@ $("html").on("keyup", function (e) {
   // Hack for non-printable keys which aren't caught with keypress native.
   if (e.which === 27) {
     isDialing = false;
-    $.post("https://YeganehhaPayPhone/exit");
+    $.post("https://yeganehha-payphone/exit");
     return;
   }
 

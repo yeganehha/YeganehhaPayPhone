@@ -24,7 +24,7 @@ function hangUp() {
   lcdText.textContent = "";
   isDialing = false;
   $.post(
-    "https://YeganehhaPayPhone/exit",
+    "https://yeganehha-payphone/exit",
     JSON.stringify({
       number: lcdText.textContent,
     })
@@ -35,9 +35,9 @@ function dial() {
   isDialing = true;
   lcdText.classList.add("blink");
   $.post(
-    "https://YeganehhaPayPhone/dial",
+    "https://yeganehha-payphone/dial",
     JSON.stringify({
-      number: lcdText.textContent,
+      number: lcdText.textContent.replaceAll("-", ""),
       myNumber: openPhoneNumber
     })
   );
@@ -64,12 +64,11 @@ $(function () {
 
   window.addEventListener("message", function (event) {
     var eventData = event.data;
-
     if (eventData.action == "ui") {
       if (eventData.toggle) {
         $("#branding").text(eventData.brand + " Telephony");
         var phoneNumber = eventData.phoneNumber;
-        myNumber = phoneNumber;
+        openPhoneNumber = phoneNumber;
         $("#this-phone-number").text(
           "# " +
             [
